@@ -21,6 +21,15 @@
    		</c:otherwise>
    </c:choose>  
    
+    <c:choose>
+        <c:when test="${menuId==4 }">
+        <li class="active"><a href="<c:url value='/cmm/newboard/selectItemList.do'/>">NewBoard<span class="sr-only">(current)</span></a></li>
+        </c:when>
+        <c:otherwise>
+        <li><a href="<c:url value='/cmm/newboard/selectItemList.do'/>">NewBoard</a></li>
+        </c:otherwise>
+   </c:choose>     
+   
   </ul>
   
 </div>
