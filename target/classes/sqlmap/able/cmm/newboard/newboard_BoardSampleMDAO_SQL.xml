@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+    SQL File Name : xmlname.xm 
+    Description : 설명을 기술합니다.
+    author hojin
+    since 2019. 8. 13.
+    version 1.0
+    Modification Information
+       since          author              description
+    ===========    =============    ===========================
+    2019. 8. 13.     hojin  		   최초 생성
+-->
+
+<mapper namespace="namespace">
+</mapper>

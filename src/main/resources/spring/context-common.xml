@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+    <context:component-scan base-package="able.**.service">
+       <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+    </context:component-scan>
+    
+	<!-- <bean id="messageSource" class="able.com.service.prop.AbleReloadableResourceBundleMessageSource"> -->
+	<bean id="messageSource" class="able.com.service.msg.AbleReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+			    <value>classpath:/message/message-*</value>
+				<value>classpath:/egovframework/rte/fdl/property/messages/properties</value>				
+			</list>
+		</property>
+		
+	</bean>
+
+	<!-- For Pagination Tag 화면에 보여줄 페이징 문자열을 생성 -->
+    <bean id="imagePagingRenderer" class="able.com.web.view.AbleImgPaginationRenderer">
+        <property name="webDir">
+            <value><![CDATA[
+                /images/com/
+            ]]></value>
+        </property>
+        <property name="preCommonTag">
+        	<value>
+            <![CDATA[
+            <nav>
+  				<ul class="pagination">  					
+ 			]]>
+            </value>
+        </property>
+        <property name="firstPageLabel">
+            <value>
+            <![CDATA[
+            
+  					<li>
+				      <a href="#" aria-label="Previous" onclick="{0}({1}); return false;">
+				        <span aria-hidden="true">&laquo;</span>
+				      </a>
+				    </li>
+ 			]]>
+            </value>
+        </property>
+        <property name="previousPageLabel">
+            <value>
+            <![CDATA[
+	                <li>
+				      <a href="#" aria-label="Previous" onclick="{0}({1}); return false;">
+				        <span aria-hidden="true">&lsaquo;</span>
+				      </a>
+				    </li>
+            ]]>
+            </value>
+        </property>
+        <property name="currentPageLabel">
+            <value>
+            <![CDATA[
+	                <li class="active"><a href="#" aria-label="Previous">{0}<span class="sr-only">(Current)</span></a></li>
+            ]]>
+            </value>
+        </property>
+        <property name="otherPageLabel">
+            <value>
+            <![CDATA[
+	                <li><a href="#" onclick="{0}({1}); return false;">{2}</a></li>
+	        ]]>
+	        </value>
+        </property>
+        <property name="nextPageLabel">
+            <value>
+            <![CDATA[
+	                <li>
+				      <a href="#" aria-label="Next" onclick="{0}({1}); return false;">
+				        <span aria-hidden="true">&rsaquo;</span>
+				      </a>
+				    </li>
+            ]]></value>
+        </property>
+        <property name="lastPageLabel">
+            <value>
+            <![CDATA[
+            		<li>
+				      <a href="#" aria-label="Next" onclick="{0}({1}); return false;">
+				        <span aria-hidden="true">&raquo;</span>
+				      </a>
+				    </li>
+				
+			]]>
+            </value>
+        </property>
+        <property name="afterCommonTag">
+        	<value>
+            <![CDATA[
+            	</ul>
+			</nav> 					
+ 			]]>
+            </value>
+        </property>
+    </bean>
+    <bean id="paginationManager" class="egovframework.rte.ptl.mvc.tags.ui.pagination.DefaultPaginationManager">
+        <property name="rendererType">
+            <map>
+                <entry key="image" value-ref="imagePagingRenderer"/>
+            </map>
+        </property>
+    </bean>
+    <!-- /For Pagination Tag -->
+	 
+</beans>
