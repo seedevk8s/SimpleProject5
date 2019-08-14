@@ -1,5 +1,6 @@
 package able.newboard.web;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,9 +8,11 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import able.board.vo.BoardSampleFileVO;
 import able.board.vo.BoardSampleVO;
 import able.com.service.file.FileUploadService;
 import able.com.service.file.FileVO;
+import able.com.util.sim.FileTool;
 import able.com.web.HController;
 import able.com.web.view.PagingInfo;
 import able.newboard.service.NewBoardSampleService;
@@ -277,6 +280,31 @@ public class NewBoardSampleController extends HController{
         model.addAttribute("result", selectItem(id));
         model.addAttribute("fileList", selectFileList(id));
         return "newboard/newboardSampleDetailView";
+    }    
+    
+    
+    
+    /**
+     * 게시글 삭제
+     * 
+     * @param newBoardSampleVO
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(path = "/cmm/newboard/deleteItem.do")
+    public String deleteItem(@ModelAttribute NewBoardSampleVO newBoardSampleVO) throws Exception {
+        List<NewBoardSampleFileVO> fileList = newBoardSampleService.selectFileId(newBoardSampleVO);
+        String filePath = "";
+        for(NewBoardSampleFileVO vo : fileList) {
+            filePath = vo.getFolderPath() + File.separator + vo.getStoredFileName();
+            // 파일 삭제
+            FileTool.deleteFile(filePath);
+         // DB 삭제
+            newBoardSampleService.deleteFileVOByKey(vo.getFileId());
+        }
+        
+        newBoardSampleService.deleteSample(newBoardSampleVO.getArtId());
+        return "forward:/cmm/newboard/selectItemList.do";
     }    
     
 }
