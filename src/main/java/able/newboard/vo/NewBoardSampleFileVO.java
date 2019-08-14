@@ -6,7 +6,7 @@ package able.newboard.vo;
  * </pre>
  *
  * @ClassName   : NewBoardSampleFileVO.java
- * @Description : 클래스 설명을 기술합니다.
+ * @Description : 게시판 파일 정보
  * @author hojin
  * @since 2019. 8. 13.
  * @version 1.0
@@ -20,5 +20,14 @@ package able.newboard.vo;
  */
 
 public class NewBoardSampleFileVO {
+    /** 게시글 ID */
+    private String artId;
 
+    public String getArtId() {
+        return artId;
+    }
+
+    public void setArtId(String artId) {
+        this.artId = artId;
+    }
 }
