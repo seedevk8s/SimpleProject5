@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import able.board.vo.BoardSampleVO;
 import able.com.service.file.FileUploadService;
 import able.com.service.file.FileVO;
 import able.com.web.HController;
@@ -224,7 +225,59 @@ public class NewBoardSampleController extends HController{
     }   
     
     
+    /**
+     * 게시글 수정 화면
+     * 
+     * @param boardSampleVO
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/cmm/newboard/updateItemForm.do")
+    public String updateItemForm(@ModelAttribute NewBoardSampleVO newBoardSampleVO, Model model) throws Exception {
+        String id = newBoardSampleVO.getArtId();
+        model.addAttribute("newBoardSampleVO", selectItem(id));
+        model.addAttribute("fileList", selectFileList(id));
+        return "newboard/newboardSampleModifyForm";
+    }   
     
+    
+    /**
+     * 게시글 수정
+     * 유효성 검사 후 조건에 맞지 않으면 form으로 이동하고, 조건에 맞으면 UPDATE를 하고 게시글 수정 화면으로 이동한다.
+     * 첨부 파일이 있는지 확인 하고 첨부파일이 있는 경우 첨부파일 업로드를 한다.
+     * 
+     * @param request
+     * @param boardSampleVO
+     * @param result
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/cmm/newboard/updateItem.do", method = RequestMethod.POST)
+    public String updateItem(HttpServletRequest request, @ModelAttribute @Valid NewBoardSampleVO newBoardSampleVO,
+            BindingResult result, Model model) throws Exception {
+
+        // form 유효성 검사
+        if (result.hasErrors()) {
+            List<ObjectError> list = result.getAllErrors();
+            for (ObjectError e : list) {
+                logger.debug("ObjectError : " + e);
+            }
+            return "newboard/newboardSampleModifyForm";
+        }
+
+        // 파일 업로드
+        checkFileUpload(request, newBoardSampleVO);
+
+        // 게시글 업데이트
+        newBoardSampleService.updateSample(newBoardSampleVO);
+
+        String id = newBoardSampleVO.getArtId();
+        model.addAttribute("result", selectItem(id));
+        model.addAttribute("fileList", selectFileList(id));
+        return "newboard/newboardSampleDetailView";
+    }    
     
 }
 
