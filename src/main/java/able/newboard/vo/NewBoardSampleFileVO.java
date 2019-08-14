@@ -1,5 +1,7 @@
 package able.newboard.vo;
 
+import able.com.service.file.FileVO;
+
 /**
  * <pre>
  * Statements
@@ -19,7 +21,7 @@ package able.newboard.vo;
  * </pre>
  */
 
-public class NewBoardSampleFileVO {
+public class NewBoardSampleFileVO extends FileVO{
     /** 게시글 ID */
     private String artId;
 

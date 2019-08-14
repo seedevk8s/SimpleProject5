@@ -4,16 +4,19 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import able.board.vo.BoardSampleVO;
 import able.com.service.file.FileUploadService;
 import able.com.web.HController;
 import able.com.web.view.PagingInfo;
 import able.newboard.service.NewBoardSampleService;
+import able.newboard.vo.NewBoardSampleFileVO;
 import able.newboard.vo.NewBoardSampleVO;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * <pre>
@@ -91,13 +94,48 @@ public class NewBoardSampleController extends HController{
     
     
     
+    /**
+     * 게시글 상세 조회 화면
+     * 
+     * @param boardSampleVO
+     * @param id
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/cmm/newboard/selectItemById.do")
+    public String selectItemById(@ModelAttribute NewBoardSampleVO newBoardSampleVO, @RequestParam("selectedId") String id,
+            Model model) throws Exception {
+        // 첨부파일 리스트
+        model.addAttribute("fileList", selectFileList(id));
+        // 글 상세내용
+        model.addAttribute("newBoardSampleVO", selectItem(id));
+        return "newboard/newboardSampleDetailView";
+    }    
     
     
+    /**
+     * (공통함수) 첨부파일 리스트 가져오기
+     * 
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    public List<NewBoardSampleFileVO> selectFileList(String id) throws Exception {
+        return newBoardSampleService.selectFileVOList(id);
+    }    
     
     
-    
-    
-    
+    /**
+     * (공통함수) 게시글 상세 내용 가져오기
+     * 
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    public NewBoardSampleVO selectItem(String id) throws Exception {
+        return newBoardSampleService.selectSample(id);
+    }    
     
     
     
