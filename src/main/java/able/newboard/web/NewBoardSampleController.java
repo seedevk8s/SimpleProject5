@@ -1,11 +1,14 @@
 package able.newboard.web;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
-import able.board.vo.BoardSampleVO;
 import able.com.service.file.FileUploadService;
+import able.com.service.file.FileVO;
 import able.com.web.HController;
 import able.com.web.view.PagingInfo;
 import able.newboard.service.NewBoardSampleService;
@@ -14,8 +17,11 @@ import able.newboard.vo.NewBoardSampleVO;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -138,13 +144,84 @@ public class NewBoardSampleController extends HController{
     }    
     
     
+    /**
+     * 게시글 등록 화면
+     * 
+     * @param boardSampleVO
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/cmm/newboard/insertItemForm.do", method = RequestMethod.GET)
+    public String insertItemForm(@ModelAttribute NewBoardSampleVO newBoardSampleVO, Model model) throws Exception {
+        return "newboard/newboardSampleRegisterForm";
+    }    
     
     
+    /**
+     * 게시글 등록
+     * 유효성 검사 후 조건에 맞지 않으면 form으로 이동하고, 조건에 맞으면 INSERT를 하고 게시글 목록 화면으로 이동한다.
+     * 첨부 파일이 있는지 확인 하고 첨부파일이 있는 경우 첨부파일 업로드를 한다.
+     * 
+     * @param boardSampleVO
+     * @param result
+     * @param model
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/cmm/newboard/insertItem.do", method = RequestMethod.POST)
+    public String insertItem(@ModelAttribute @Valid NewBoardSampleVO newBoardSampleVO, BindingResult result, Model model,
+            HttpServletRequest request) throws Exception {
+
+        // form 유효성 검사
+        if (result.hasErrors()) {
+            List<ObjectError> list = result.getAllErrors();
+            for (ObjectError e : list) {
+                logger.debug("ObjectError : " + e);
+            }
+            return "newboard/boardSampleRegisterForm";
+        }
+
+        // 첨부파일 여부 확인, 첨부파일이 존재하면 업로드
+        checkFileUpload(request, newBoardSampleVO);
+
+        // 게시글 DB 저장
+        newBoardSampleService.insertSample(newBoardSampleVO);
+
+        return "forward:/cmm/newboard/selectItemList.do";
+    }    
     
     
-    
-    
-    
+    /**
+     * 첨부파일 여부 체크
+     * 
+     * @param request
+     * @param boardSampleVO
+     * @throws Exception
+     */
+    public void checkFileUpload(HttpServletRequest request, NewBoardSampleVO newBoardSampleVO) throws Exception {
+        // 파일 업로드
+        List<FileVO> uploadFileList = fileUploadService.upload(request);
+
+        if (uploadFileList != null) {
+
+            List<NewBoardSampleFileVO> bsfvList = new ArrayList<NewBoardSampleFileVO>();
+            int fileList = uploadFileList.size();
+            for (int i = 0; i < fileList; i++) {
+                NewBoardSampleFileVO fv = new NewBoardSampleFileVO();
+/*                
+                fv.setFileId(uploadFileList.get(i).getFileId());
+                fv.setFileSize(uploadFileList.get(i).getFileSize());
+                fv.setFolderPath(uploadFileList.get(i).getFolderPath());
+                fv.setRegDate(uploadFileList.get(i).getRegDate());
+                fv.setOriginalFileName(uploadFileList.get(i).getOriginalFileName());
+                fv.setStoredFileName(uploadFileList.get(i).getStoredFileName());
+                bsfvList.add(fv);*/
+            }
+            newBoardSampleVO.setFileList(bsfvList);
+        }
+    }   
     
     
     
